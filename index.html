@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internal Marks Calculator</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #f5f6fa;
+      --success-color: #2ecc71;
+      --text-color: #2c3e50;
+      --border-radius: 8px;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      background: linear-gradient(45deg, #0b0b2b, #1a1a4f);
+      color: white;
+      margin-top: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #4a90e2, transparent);
+    }
+
+    .creator-text {
+      font-size: 1.2rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(204, 213, 223, 0.5);
+      animation: glowText 5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowText {
+      from {
+        text-shadow: 0 0 10px rgb(237, 243, 244);
+      }
+      to {
+        text-shadow: 0 0 20px rgba(74, 144, 226, 0.8),
+                     0 0 30px rgba(74, 144, 226, 0.6);
+      }
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
+      margin: 0;
+      padding: 20px;
+      color: var(--text-color);
+      min-height: 100vh;
+      background-image: url(https://images.pexels.com/photos/2836955/pexels-photo-2836955.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: rgb(206, 238, 241);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    /* New styles for input sections */
+    .input-section {
+      background: rgb(206, 238, 241);
+      padding: 1.75rem;  /* Reduced from 1rem */
+      margin-bottom: 1rem;  /* Reduced from 1rem */
+      border-radius: var(--border-radius);
+      box-shadow: 0 0px 0px rgba(0,0,0,0);
+      max-width: 600px;  /* Added max-width */
+      margin-left: auto;  /* Center the section */
+      margin-right: auto; /* Center the section */
+    }
+
+    /* Adjust input padding to match new compact style */
+    input, select {
+      width: 100%;
+      padding: 0.5rem;  /* Reduced from 0.75rem */
+      border: 2px solid #e1e1e1;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    /* Adjust label margin to match new compact style */
+    label {
+      display: block;
+      margin-bottom: 0.25rem;  /* Reduced from 0.5rem */
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1.5rem;
+    }
+
+    button:hover {
+      background: #357abd;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    .result {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: var(--success-color);
+      border-radius: var(--border-radius);
+      color: white;
+      font-size: 1.2rem;
+      text-align: center;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    #worksheets {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+        margin: 1rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container animate__animated animate__fadeIn">
+    <h1>Internal Marks Calculator</h1>
+    <form id="calculatorForm">
+      <div class="form-group">
+        <label for="studentName">Student Name:</label>
+        <input type="text" id="studentName" required placeholder="Enter student name">
+      </div>
+
+      <div class="form-group">
+        <label for="semester">Current Semester:</label>
+        <input type="text" id="semester" required placeholder="Enter semester">
+      </div>
+
+      <div class="form-group">
+        <label for="subjectName">Subject Name:</label>
+        <input type="text" id="subjectName" required placeholder="Enter subject name">
+      </div>
+
+      <div class="form-group">
+        <label for="subjectType">Subject Type:</label>
+        <select id="subjectType" onchange="updateForm()">
+          <option value="hybrid">Hybrid</option>
+          <option value="practical">Practical</option>
+          <option value="theory">Theory</option>
+        </select>
+      </div>
+
+      <div id="dynamicFields"></div>
+
+      <button type="button" onclick="calculateMarks()">Calculate Marks</button>
+    </form>
+    <div id="result" class="result hidden"></div>
+  </div>
+
+  <script>
+    function updateForm() {
+      const subjectType = document.getElementById('subjectType').value;
+      const dynamicFields = document.getElementById('dynamicFields');
+      dynamicFields.innerHTML = "";
+
+      if (subjectType === "hybrid") {
+        dynamicFields.innerHTML = `
+          <div class="input-section">
+            <label for="includePractical">Include Final Practical?</label>
+            <select id="includePractical" onchange="togglePracticalField()">
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+
+          <div id="practicalField" class="input-section">
+            <label for="finalPractical">Final Practical (out of 40):</label>
+            <input type="number" id="finalPractical" max="40" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="attendance">Attendance (out of 2):</label>
+            <input type="number" id="attendance" max="2" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label>Worksheets (each out of 30):</label>
+            <div id="worksheets"></div>
+          </div>
+
+          <div class="input-section">
+            <label for="quiz">Quiz (out of 4):</label>
+            <input type="number" id="quiz" max="4" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="surpriseTest">Surprise Test (ST) (out of 12):</label>
+            <input type="number" id="surpriseTest" max="12" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="labMST">Lab MST (out of 10):</label>
+            <input type="number" id="labMST" max="10" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="assignment">Assignment (out of 10):</label>
+            <input type="number" id="assignment" max="10" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="theoryMST1">Theory MST 1 (out of 20):</label>
+            <input type="number" id="theoryMST1" max="20" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="theoryMST2">Theory MST 2 (out of 20):</label>
+            <input type="number" id="theoryMST2" max="20" min="0" required>
+          </div>
+        `;
+        for (let i = 1; i <= 10; i++) {
+          const input = document.createElement('input');
+          input.type = 'number';
+          input.id = `worksheet${i}`;
+          input.max = 30;
+          input.min = 0;
+          input.placeholder = `Worksheet ${i} (out of 30)`;
+          input.required = true;
+          document.getElementById('worksheets').appendChild(input);
+        }
+      } else if (subjectType === "practical") {
+        dynamicFields.innerHTML = `
+          <div class="input-section">
+            <label>Worksheets (each out of 30):</label>
+            <div id="worksheets"></div>
+          </div>
+
+          <div class="input-section">
+            <label for="labMST">Mid Term Test / Lab MST (out of 15):</label>
+            <input type="number" id="labMST" max="15" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="quiz">Quiz (out of 4):</label>
+            <input type="number" id="quiz" max="4" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="attendance">Attendance (out of 4):</label>
+            <input type="number" id="attendance" max="4" min="0" required>
+          </div>
+        `;
+        for (let i = 1; i <= 10; i++) {
+          const input = document.createElement('input');
+          input.type = 'number';
+          input.id = `worksheet${i}`;
+          input.max = 30;
+          input.min = 0;
+          input.placeholder = `Worksheet ${i} (out of 30)`;
+          input.required = true;
+          document.getElementById('worksheets').appendChild(input);
+        }
+      } else if (subjectType === "theory") {
+        dynamicFields.innerHTML = `
+          <div class="input-section">
+            <label for="assignment">Assignment (out of 10):</label>
+            <input type="number" id="assignment" max="10" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="surpriseTest">Surprise Test (ST) (out of 12):</label>
+            <input type="number" id="surpriseTest" max="12" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="quiz">Quiz (out of 4):</label>
+            <input type="number" id="quiz" max="4" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="theoryMST1">Theory MST 1 (out of 20):</label>
+            <input type="number" id="theoryMST1" max="20" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="theoryMST2">Theory MST 2 (out of 20):</label>
+            <input type="number" id="theoryMST2" max="20" min="0" required>
+          </div>
+
+          <div class="input-section">
+            <label for="attendance">Attendance (out of 2):</label>
+            <input type="number" id="attendance" max="2" min="0" required>
+          </div>
+        `;
+      }
+    }
+
+    function togglePracticalField() {
+      const includePractical = document.getElementById('includePractical').value;
+      const practicalField = document.getElementById('practicalField');
+      const finalPractical = document.getElementById('finalPractical');
+      
+      if (includePractical === 'no') {
+        practicalField.style.display = 'none';
+        finalPractical.required = false;
+      } else {
+        practicalField.style.display = 'block';
+        finalPractical.required = true;
+      }
+    }
+
+    function calculateMarks() {
+      const subjectType = document.getElementById('subjectType').value;
+      let total = 0;
+
+      if (subjectType === "hybrid") {
+        const includePractical = document.getElementById('includePractical').value;
+        const attendance = (parseFloat(document.getElementById('attendance').value) / 2) * 2;
+        const quiz = parseFloat(document.getElementById('quiz').value);
+        const surpriseTest = (parseFloat(document.getElementById('surpriseTest').value) / 12) * 4;
+        const labMST = (parseFloat(document.getElementById('labMST').value) / 10) * 4;
+        const assignment = (parseFloat(document.getElementById('assignment').value) / 10) * 6;
+        const theoryMST = ((parseFloat(document.getElementById('theoryMST1').value) + parseFloat(document.getElementById('theoryMST2').value)) / 40) * 10;
+
+        let worksheetTotal = 0;
+        for (let i = 1; i <= 10; i++) {
+          worksheetTotal += parseFloat(document.getElementById(`worksheet${i}`).value) || 0;
+        }
+        const weightedWorksheets = (worksheetTotal / 300) * 20;
+
+        total = attendance + quiz + surpriseTest + labMST + assignment + theoryMST + weightedWorksheets;
+        
+        if (includePractical === 'yes') {
+          const finalPractical = (parseFloat(document.getElementById('finalPractical').value) / 40) * 20;
+          total += finalPractical;
+        }
+
+        const maxMarks = includePractical === 'yes' ? 70 : 50;
+        document.getElementById('result').textContent = `Total Marks (out of ${maxMarks}): ${total.toFixed(2)}`;
+      } else if (subjectType === "practical") {
+        const attendance = parseFloat(document.getElementById('attendance').value);
+        const quiz = parseFloat(document.getElementById('quiz').value);
+        const labMST = (parseFloat(document.getElementById('labMST').value) / 15) * 12;
+
+        let worksheetTotal = 0;
+        for (let i = 1; i <= 10; i++) {
+          worksheetTotal += parseFloat(document.getElementById(`worksheet${i}`).value) || 0;
+        }
+        const weightedWorksheets = (worksheetTotal / 300) * 40;
+
+        total = attendance + quiz + labMST + weightedWorksheets;
+        document.getElementById('result').textContent = `Total Marks (out of 60): ${total.toFixed(2)}`;
+      } else if (subjectType === "theory") {
+        const assignment = parseFloat(document.getElementById('assignment').value);
+        const surpriseTest = (parseFloat(document.getElementById('surpriseTest').value) / 12) * 4;
+        const quiz = parseFloat(document.getElementById('quiz').value);
+        const theoryMST = ((parseFloat(document.getElementById('theoryMST1').value) + parseFloat(document.getElementById('theoryMST2').value)) / 40) * 20;
+        const attendance = parseFloat(document.getElementById('attendance').value);
+
+        total = assignment + surpriseTest + quiz + theoryMST + attendance;
+        document.getElementById('result').textContent = `Total Marks (out of 40): ${total.toFixed(2)}`;
+      }
+
+      document.getElementById('result').classList.remove('hidden');
+    }
+
+    // Initialize form with hybrid fields
+    updateForm();
+  </script>
+  <footer class="footer">
+    <div class="creator-text">Created by Akhanda</div>
+  </footer>
+</body>
+</html>
