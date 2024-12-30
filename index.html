@@ -207,11 +207,15 @@
       <div id="dynamicFields"></div>
 
       <button type="button" onclick="calculateMarks()">Calculate Marks</button>
+      <button type="button" onclick="navigateToPage()">Calculate SGPA and CGPA</button>
     </form>
     <div id="result" class="result hidden"></div>
   </div>
 
   <script>
+    function navigateToPage() {
+            window.location.href = "index2.html"; // Replace with your target HTML file
+        }
     function updateForm() {
       const subjectType = document.getElementById('subjectType').value;
       const dynamicFields = document.getElementById('dynamicFields');
